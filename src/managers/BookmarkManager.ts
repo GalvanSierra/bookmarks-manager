@@ -59,9 +59,7 @@ export class BookmarkManager {
       return [];
     }
 
-    this.logger.info(
-      `Found ${results.length} bookmarks with keywords: ${searchOptions.includeWords.join(', ')}`,
-    );
+    this.logger.info(`Found ${results.length} bookmarks with keywords`);
 
     return results;
   }

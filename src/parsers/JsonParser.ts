@@ -39,6 +39,13 @@ export class JsonParser implements IParserBookmark {
    * @returns A JSON string representation of the input array
    */
   serialize(bookmarks: Bookmark[]): string {
-    return JSON.stringify(bookmarks, null, 2);
+    return JSON.stringify(
+      bookmarks.map((b) => {
+        delete b.id;
+        return b;
+      }),
+      null,
+      2,
+    );
   }
 }
