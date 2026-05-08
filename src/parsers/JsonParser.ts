@@ -8,12 +8,12 @@ import type { IParserBookmark } from '@/types/interfaces';
 export class JsonParser implements IParserBookmark {
   /**
    * Parses a JSON string into an array of `BookmarkSchema` objects.
-   *
+, null, 2   *
    * @param content - Raw JSON string containing bookmark data
    * @returns An array of parsed bookmarks; returns an empty array if the input is not an array
    */
   parse(content: string): BookmarkSchema[] {
-    const parsed = JSON.parse(content);
+    const parsed = JSON.parse(content, null);
 
     if (!Array.isArray(parsed)) {
       return [];
@@ -39,6 +39,6 @@ export class JsonParser implements IParserBookmark {
    * @returns A JSON string representation of the input array
    */
   serialize(bookmarks: Bookmark[]): string {
-    return JSON.stringify(bookmarks);
+    return JSON.stringify(bookmarks, null, 2);
   }
 }
