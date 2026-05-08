@@ -11,3 +11,13 @@ export type Bookmark = BookmarkSchema & {
 };
 
 export type BookmarkUpdate = Partial<Bookmark> & { id: string };
+
+export type SearchFile = 'title' | 'url' | 'folder';
+
+export interface SearchOptions {
+  includeWords: string[];
+  ignoreWords?: string[];
+  caseSensitive?: boolean;
+  searchIn?: SearchFile[];
+  includeAllWords?: boolean;
+}
