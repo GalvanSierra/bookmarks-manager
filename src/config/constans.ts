@@ -1,3 +1,5 @@
+import type { ParserConfig } from '@/types/manga';
+
 export const HTML_TEMPLATE = `
 <!DOCTYPE NETSCAPE-Bookmark-file-1>
 <!-- This is an automatically generated file.
@@ -11,3 +13,10 @@ export const HTML_TEMPLATE = `
     <DL><p>
     </DL><p>
 `;
+
+export const CONFIG_BY_DOMAIN: Record<string, ParserConfig> = {
+  'visorikigai.yomod.xyz': {
+    regexTitle: /^(?:Capítulo\s+\d+\s+-\s+)?(.+?)\s+\|/,
+    regexChapter: /Capítulo\s+(\d+)/,
+  },
+};
