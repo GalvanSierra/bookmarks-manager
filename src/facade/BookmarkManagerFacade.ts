@@ -18,6 +18,8 @@ const parsers: Record<string, IParserBookmark> = {
 export class BookmarkManagerFacade {
   private logger = new Logger();
   private fileHandler = new FileHandler(this.logger);
+  private array: BookmarkManager[] = [];
+
   /**
    * Loads bookmarks from the given file path.
    *
@@ -40,9 +42,18 @@ export class BookmarkManagerFacade {
 
     await manager.loadBookmarks();
 
+    this.array.push(manager);
     return manager;
   }
 
+  /**
+   * Saves all bookmarks to their respective files.
+   */
+  public async save(): Promise<void> {
+    for (const manager of this.array) {
+      await manager.saveBookmarks();
+    }
+  }
   /**
    * Exports bookmarks to the given file path.
    *
