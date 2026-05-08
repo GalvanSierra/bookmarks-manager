@@ -67,6 +67,22 @@ export class BookmarkManager {
   }
 
   /**
+   * Picks bookmarks by keywords and deletes them from the service.
+   *
+   * @param searchOptions - Search options
+   * @returns An array of `Bookmark` objects that match the search criteria
+   */
+  public pickBookmarksBy(searchOptions: SearchOptions): Bookmark[] {
+    const picked = this.searchBookmarksBy(searchOptions);
+    if (picked.length === 0) return [];
+
+    this.service.deleteMany(picked);
+    this.logger.info(`Picked ${picked} bookmarks`);
+
+    return picked;
+  }
+
+  /**
    * Updates multiple bookmarks by their ID.
    * Skips bookmarks whose ID does not exist or whose new URL conflicts with an existing one.
    *
