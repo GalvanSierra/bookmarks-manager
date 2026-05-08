@@ -6,7 +6,8 @@ import type { Bookmark } from '@/types/bookmark';
 import type { IParserBookmark } from '@/types/interfaces';
 import { FileHandler } from '@/utils/FileHandler';
 import { Logger } from '@/utils/Logger';
-import { extname } from 'node:path';
+import { readdir } from 'node:fs/promises';
+import { extname, join } from 'node:path';
 
 /** Map of file extensions to their corresponding parser instances. */
 const parsers: Record<string, IParserBookmark> = {
@@ -60,5 +61,14 @@ export class BookmarkManagerFacade {
     const content = parser.serialize(bookmarks);
 
     await this.fileHandler.write(path, content);
+  }
+
+  async readDirectory(path: string): Promise<string[]> {
+    const files = await readdir(path, {
+      withFileTypes: true,
+      recursive: true,
+    });
+
+    return files.filter((file) => file.isFile()).map((file) => join(file.parentPath, file.name));
   }
 }
