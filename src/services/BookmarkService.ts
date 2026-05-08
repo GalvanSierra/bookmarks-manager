@@ -135,6 +135,39 @@ export class BookmarkService {
 
     return deleted;
   }
+
+  /**
+   * Sorts bookmarks by domain.
+   *
+   * @param bookmarks - Array of bookmarks to sort
+   * @returns An array of bookmarks sorted by domain
+   */
+  public orderByDomain(bookmarks: Bookmark[]): Bookmark[] {
+    if (!bookmarks.length) return [];
+
+    const folders = Map.groupBy(bookmarks, (b) => b.folder);
+
+    return [...folders.values()].flatMap((folderBookmarks) => {
+      const domains = Map.groupBy(folderBookmarks, (b) => this.getHostname(b.url));
+
+      return [...domains.values()].sort((a, b) => b.length - a.length).flat();
+    });
+  }
+
+  /**
+   * Returns the hostname of a URL.
+   *
+   * @param url - The URL to get the hostname of
+   * @returns The hostname of the URL
+   */
+  private getHostname(url: string): string {
+    try {
+      return new URL(url).hostname;
+    } catch {
+      return 'invalid-url';
+    }
+  }
+
   /**
    * Returns all stored bookmarks.
    *

@@ -116,13 +116,19 @@ export class BookmarkManager {
     return this.service.getAll();
   }
   /**
-   * Saves the bookmarks to the file system.
+   * Saves the bookmarks to the file system. If `ordered` is `true`, the bookmarks are sorted by domain.
    *
+   * @param ordered - Whether to sort the bookmarks by domain before saving
    * @throws If the file cannot be written
    */
-  public async saveBookmarks(): Promise<void> {
+
+  public async saveBookmarks(ordered?: boolean): Promise<void> {
     try {
-      const bookmarks = this.service.getAll();
+      let bookmarks: Bookmark[];
+
+      if (ordered) bookmarks = this.service.orderByDomain(this.service.getAll());
+      else bookmarks = this.service.getAll();
+
       const content = this.parser.serialize(bookmarks);
       await this.fileHandler.write(this.path, content);
 
