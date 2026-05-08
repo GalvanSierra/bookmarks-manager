@@ -77,7 +77,7 @@ export class BookmarkManager {
     if (picked.length === 0) return [];
 
     this.service.deleteMany(picked);
-    this.logger.info(`Picked ${picked} bookmarks`);
+    this.logger.info(`Picked ${picked.length} bookmarks`);
 
     return picked;
   }
