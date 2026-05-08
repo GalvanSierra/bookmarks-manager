@@ -13,6 +13,11 @@ export class BookmarkManager {
     private logger: Logger,
   ) {}
 
+  /**
+   * Loads bookmarks from the file system.
+   *
+   * @throws If the file cannot be read or parsed
+   */
   public async loadBookmarks(): Promise<void> {
     try {
       const content = await this.fileHandler.read(this.path);
@@ -50,6 +55,13 @@ export class BookmarkManager {
     return results;
   }
 
+  /**
+   * Updates multiple bookmarks by their ID.
+   * Skips bookmarks whose ID does not exist or whose new URL conflicts with an existing one.
+   *
+   * @param bookmarks - Array of partial bookmark data with required `id` field
+   * @returns The number of bookmarks that were successfully updated
+   */
   public updateBookmarks(bookmarks: BookmarkUpdate[]): number {
     const updated = this.service.updateMany(bookmarks);
     return updated;
