@@ -70,6 +70,48 @@ export class MangaService {
     return { toKeep, toDelete };
   }
 
+  /**
+   * Removes series entries that already have at least one bookmarked chapter.
+   *
+   * @param series - Array of manga series bookmarks
+   * @param chapters - Array of manga chapter bookmarks
+   * @returns An object containing the remaining series and the removed series
+   */
+  removeSeriesWithChapters(
+    series: MangaSeries[],
+    chapters: MangaChapter[],
+  ): {
+    toKeep: MangaSeries[];
+    toDelete: MangaSeries[];
+  } {
+    const toKeep: MangaSeries[] = [];
+    const toDelete: MangaSeries[] = [];
+
+    const setTitleChapters = new Set(chapters.map((s) => s.serie));
+
+    for (const serie of series) {
+      if (setTitleChapters.has(serie.serie)) {
+        toDelete.push(serie);
+      } else {
+        toKeep.push(serie);
+      }
+    }
+
+    return { toKeep, toDelete };
+  }
+
+  /** Orders chapters by chapter number.
+   *
+   * @param chapters - Array of MangaChapters to order
+   * @param sort - Sort order ('asc' or 'desc')
+   * @returns An array of MangaChapters ordered by chapter number
+   */
+
+  orderChapters(chapters: MangaChapter[], sort: 'asc' | 'desc' = 'desc'): MangaChapter[] {
+    return chapters.sort((a, b) => {
+      return sort === 'asc' ? b.chapter - a.chapter : a.chapter - b.chapter;
+    });
+  }
   private getHostname(url: string): string {
     try {
       return new URL(url).hostname;
