@@ -1,8 +1,5 @@
-import type { Bookmark, BookmarkSchema } from '@/types/bookmark';
+import type { Bookmark, BookmarkSchema, BookmarkUpdate } from '@/types/bookmark';
 import { randomUUIDv7 } from 'bun';
-
-/** Partial bookmark data used for updates. The `id` field is required to identify the target. */
-type BookmarkUpdate = Partial<Bookmark> & { id: string };
 
 /**
  * In-memory service for managing bookmarks.

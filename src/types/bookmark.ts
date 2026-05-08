@@ -9,3 +9,5 @@ export interface BookmarkSchema {
 export type Bookmark = BookmarkSchema & {
   id: string;
 };
+
+export type BookmarkUpdate = Partial<Bookmark> & { id: string };
