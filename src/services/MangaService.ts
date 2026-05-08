@@ -1,6 +1,6 @@
 import { CONFIG_BY_DOMAIN } from '@/config/constans';
 import type { Bookmark } from '@/types/bookmark';
-import type { Manga, MangaChapter, MangaSeries } from '@/types/manga';
+import type { MangaChapter, MangaSeries } from '@/types/manga';
 
 export class MangaService {
   /**
@@ -12,19 +12,20 @@ export class MangaService {
   public parser(bookmarks: Bookmark[]): {
     series: MangaSeries[];
     chapters: MangaChapter[];
-    others: Manga[];
+    others: Bookmark[];
   } {
     const byDomain = Map.groupBy(bookmarks, (manga) => this.getHostname(manga.url));
 
     const series: MangaSeries[] = [];
     const chapters: MangaChapter[] = [];
-    const others: Manga[] = [];
+    const others: Bookmark[] = [];
 
-    for (const [domain, domainBookmarks] of Object.entries(byDomain)) {
+    for (const [domain, domainBookmarks] of byDomain.entries()) {
+      console.log('Domain: ', domain);
       const config = CONFIG_BY_DOMAIN[domain];
 
       if (!config) {
-        others.push(...domainBookmarks);
+        domainBookmarks.forEach((b) => others.push(b));
         continue;
       }
 
