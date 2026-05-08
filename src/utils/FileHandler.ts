@@ -29,4 +29,20 @@ export class FileHandler {
       throw error;
     }
   }
+
+  /**
+   * Writes the given content to a file at the given path.
+   *
+   * @param destination - Absolute or relative path to the file
+   * @param content     - The content to write to the file
+   * @throws If the file cannot be written
+   */
+  async write(destination: string, content: string): Promise<void> {
+    try {
+      await Bun.write(destination, content);
+    } catch (error) {
+      this.logger.error(`Failed to write file: ${error}`, { filePath: destination });
+      throw error;
+    }
+  }
 }
