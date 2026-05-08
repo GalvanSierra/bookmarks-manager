@@ -14,6 +14,17 @@ export class BookmarkManager {
   ) {}
 
   /**
+   * Adds multiple bookmarks to the service.
+   *
+   * @param bookmark - Array of bookmark data to add
+   * @returns The number of bookmarks that were successfully created
+   */
+  public addBookmarks(bookmark: Bookmark[]): number {
+    const created = this.service.createMany(bookmark);
+    return created;
+  }
+
+  /**
    * Loads bookmarks from the file system.
    *
    * @throws If the file cannot be read or parsed
