@@ -73,9 +73,10 @@ export class BookmarkManager {
    * @param bookmarks - Array of partial bookmark data with required `id` field
    * @returns The number of bookmarks that were successfully updated
    */
-  public updateBookmarks(bookmarks: BookmarkUpdate[]): number {
+  public updateBookmarks(bookmarks: BookmarkUpdate[]): void {
     const updated = this.service.updateMany(bookmarks);
-    return updated;
+
+    this.logger.info(`Updated ${updated} bookmarks`);
   }
 
   /**
@@ -84,9 +85,10 @@ export class BookmarkManager {
    * @param bookmarks - Array of bookmark data with required `id` field
    * @returns The number of bookmarks that were successfully deleted
    */
-  public deleteBookmarks(bookmarks: BookmarkUpdate[]): number {
+  public deleteBookmarks(bookmarks: BookmarkUpdate[]): void {
     const deleted = this.service.deleteMany(bookmarks);
-    return deleted;
+
+    this.logger.info(`Deleted ${deleted} bookmarks`);
   }
 
   /**
