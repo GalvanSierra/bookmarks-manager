@@ -1,6 +1,9 @@
 import type { Bookmark, BookmarkSchema } from '@/types/bookmark';
 import { randomUUIDv7 } from 'bun';
 
+/** Partial bookmark data used for updates. The `id` field is required to identify the target. */
+type BookmarkUpdate = Partial<Bookmark> & { id: string };
+
 /**
  * In-memory service for managing bookmarks.
  * Provides creation, indexing by URL (to avoid duplicates), and retrieval.
@@ -43,6 +46,40 @@ export class BookmarkService {
     }
 
     return created;
+  }
+
+  /**
+   * Updates multiple bookmarks by their ID.
+   * Skips bookmarks whose ID does not exist or whose new URL conflicts with an existing one.
+   *
+   * @param bookmarks - Array of partial bookmark data with required `id` field
+   * @returns The number of bookmarks that were successfully updated
+   */
+  public updateMany(bookmarks: BookmarkUpdate[]): number {
+    let updated = 0;
+    for (const bookmark of bookmarks) {
+      if (!this.bookmarks.has(bookmark.id)) continue;
+      const existing = this.bookmarks.get(bookmark.id)!;
+
+      const updatedBookmark: Bookmark = {
+        ...existing,
+        ...bookmark,
+      };
+
+      const existingId = this.urlIndex.get(updatedBookmark.url);
+      if (existingId !== bookmark.id) continue;
+
+      this.bookmarks.set(bookmark.id, updatedBookmark);
+
+      if (existing.url !== updatedBookmark.url) {
+        this.urlIndex.delete(existing.url);
+        this.urlIndex.set(updatedBookmark.url, updatedBookmark.id);
+      }
+
+      updated++;
+    }
+
+    return updated;
   }
 
   /**
