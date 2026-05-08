@@ -1,5 +1,5 @@
 import type { BookmarkService } from '@/services/BookmarkService';
-import type { BookmarkUpdate } from '@/types/bookmark';
+import type { Bookmark, BookmarkUpdate, SearchOptions } from '@/types/bookmark';
 import type { IParserBookmark } from '@/types/interfaces';
 import type { FileHandler } from '@/utils/FileHandler';
 import type { Logger } from '@/utils/Logger';
@@ -27,6 +27,27 @@ export class BookmarkManager {
       this.logger.error('Failed to load bookmarks', error);
       throw new Error(`Failed to load bookmarks from ${this.path}: ${error}`);
     }
+  }
+
+  /**
+   * Searches bookmarks by keywords and returns a filtered array.
+   *
+   * @param options - Search options
+   * @returns An array of `Bookmark` objects that match the search criteria
+   */
+  public searchBookmarksBy(searchOptions: SearchOptions): Bookmark[] {
+    const results = this.service.searchBy(searchOptions);
+
+    if (results.length === 0) {
+      this.logger.info(`Not found any bookmarks with keywords`);
+      return [];
+    }
+
+    this.logger.info(
+      `Found ${results.length} bookmarks with keywords: ${searchOptions.includeWords.join(', ')}`,
+    );
+
+    return results;
   }
 
   public updateBookmarks(bookmarks: BookmarkUpdate[]): number {
