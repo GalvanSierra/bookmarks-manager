@@ -6,56 +6,52 @@ Herramienta de línea de comandos tipo **utility script** para gestionar bookmar
 
 ## 🚀 Características
 
-- 📥 Cargar bookmarks desde archivo HTML o JSON
-- 🔍 Buscar bookmarks por palabras clave
+- 📥 Cargar bookmarks desde archivo HTML (Netscape) o JSON
+- 🔍 Buscar por palabras clave con modo OR, AND y exclusión
 - 🗂️ Soporte de carpetas anidadas
-- 💾 Exportar subconjuntos de bookmarks a archivos HTML o JSON
-
----
+- 🔄 Ordenar marcadores por frecuencia de dominio dentro de cada carpeta
+- 💾 Exportar subconjuntos a HTML o JSON
 
 ## 🧱 Stack
 
 - **Runtime:** Bun
 - **Lenguaje:** TypeScript
 
----
-
 ## 🧠 Enfoque
 
-Este proyecto es un **utility script**, lo que implica:
+Utility script de vida corta. El comportamiento se modifica editando directamente `index.ts`. No hay CLI compleja ni parsing de argumentos.
 
-- El flujo se define directamente en el `main`
-- No hay CLI compleja ni parsing de argumentos
-- El comportamiento se modifica editando código
-- Está pensado para uso temporal / ad-hoc
+La lógica vive en servicios desacoplados para mantener el código legible durante su período de uso:
 
-El `main` actúa como **orquestador**, mientras que la lógica vive en servicios desacoplados.
-
----
+| Componente                  | Responsabilidad                                                                                 |
+| --------------------------- | ----------------------------------------------------------------------------------------------- |
+| `BookmarkManagerFacade`     | Composition root: instancia dependencias e inyecta el parser correcto según el tipo de archivo. |
+| `index.ts`                  | Orquestador del flujo: define qué operaciones se ejecutan y en qué orden.                       |
+| `BookmarkManager`           | Operaciones CRUD y persistencia.                                                                |
+| `BookmarkService`           | Almacén en memoria, búsqueda y transformaciones.                                                |
+| `HtmlParser` / `JsonParser` | Parseo y serialización por formato.                                                             |
+| `FileHandler`               | Lectura y escritura de archivos.                                                                |
 
 ## 📁 Estructura del proyecto
 
 ```
 src/
+├── facade/
+│   └── BookmarkManagerFacade.ts
 ├── managers/
 │   └── BookmarkManager.ts
 ├── services/
 │   └── BookmarkService.ts
 ├── parsers/
-│   └── HtmlParser.ts
+│   ├── HtmlParser.ts
 │   └── JsonParser.ts
 ├── utils/
 │   └── FileHandler.ts
-│   └── Logger.ts
-├── types/
-│   └── bookmark.ts
-└── facade/
-    └── BookmarkManagerFacade.ts
-
+└── types/
+    └── bookmark.ts
+index.ts
 data/
 ```
-
----
 
 ## ⚙️ Instalación
 
@@ -63,16 +59,14 @@ data/
 bun install
 ```
 
-To run:
+## ▶️ Uso
 
 ```bash
 bun run start
 ```
 
+Modificar el flujo directamente en `index.ts`.
+
 ## ⚡ Notas
 
-Este proyecto prioriza:
-
-- Simplicidad
-- Velocidad de implementación
-- Control directo del flujo
+Este proyecto prioriza simplicidad y velocidad de implementación. No está diseñado para extensión a largo plazo.
