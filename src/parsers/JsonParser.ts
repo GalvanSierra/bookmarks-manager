@@ -1,4 +1,4 @@
-import type { BookmarkSchema } from '@/types/bookmark';
+import type { Bookmark, BookmarkSchema } from '@/types/bookmark';
 import type { IParserBookmark } from '@/types/interfaces';
 
 /**
@@ -30,5 +30,15 @@ export class JsonParser implements IParserBookmark {
         icon: item.icon,
       };
     });
+  }
+
+  /**
+   * Serializes an array of `Bookmark` objects into a JSON string.
+   *
+   * @param bookmarks - Array of `Bookmark` objects to serialize
+   * @returns A JSON string representation of the input array
+   */
+  serialize(bookmarks: Bookmark[]): string {
+    return JSON.stringify(bookmarks);
   }
 }
