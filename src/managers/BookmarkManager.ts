@@ -1,4 +1,5 @@
 import type { BookmarkService } from '@/services/BookmarkService';
+import type { BookmarkUpdate } from '@/types/bookmark';
 import type { IParserBookmark } from '@/types/interfaces';
 import type { FileHandler } from '@/utils/FileHandler';
 import type { Logger } from '@/utils/Logger';
@@ -26,6 +27,11 @@ export class BookmarkManager {
       this.logger.error('Failed to load bookmarks', error);
       throw new Error(`Failed to load bookmarks from ${this.path}: ${error}`);
     }
+  }
+
+  public updateBookmarks(bookmarks: BookmarkUpdate[]): number {
+    const updated = this.service.updateMany(bookmarks);
+    return updated;
   }
 
   /**
