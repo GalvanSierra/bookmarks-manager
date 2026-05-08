@@ -79,6 +79,25 @@ export class BookmarkManager {
   }
 
   /**
+   * Deletes multiple bookmarks by their ID.
+   *
+   * @param bookmarks - Array of bookmark data with required `id` field
+   * @returns The number of bookmarks that were successfully deleted
+   */
+  public deleteBookmarks(bookmarks: BookmarkUpdate[]): number {
+    const deleted = this.service.deleteMany(bookmarks);
+    return deleted;
+  }
+
+  /**
+   * Returns all stored bookmarks.
+   *
+   * @returns An array of `Bookmark` objects
+   */
+  public getBookmarks(): Bookmark[] {
+    return this.service.getAll();
+  }
+  /**
    * Saves the bookmarks to the file system.
    *
    * @throws If the file cannot be written

@@ -114,6 +114,28 @@ export class BookmarkService {
   }
 
   /**
+   * Deletes multiple bookmarks by their ID.
+   *
+   * @param bookmarks - Array of bookmark data with required `id` field
+   * @returns The number of bookmarks that were successfully deleted
+   */
+
+  public deleteMany(bookmarks: BookmarkUpdate[]): number {
+    let deleted = 0;
+    for (const bookmark of bookmarks) {
+      if (!this.bookmarks.has(bookmark.id)) continue;
+
+      const existing = this.bookmarks.get(bookmark.id)!;
+
+      this.bookmarks.delete(bookmark.id);
+      this.urlIndex.delete(existing.url);
+
+      deleted++;
+    }
+
+    return deleted;
+  }
+  /**
    * Returns all stored bookmarks.
    *
    * @returns An array of all `Bookmark` objects currently in memory
