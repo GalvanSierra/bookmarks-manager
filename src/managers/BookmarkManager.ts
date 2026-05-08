@@ -27,4 +27,22 @@ export class BookmarkManager {
       throw new Error(`Failed to load bookmarks from ${this.path}: ${error}`);
     }
   }
+
+  /**
+   * Saves the bookmarks to the file system.
+   *
+   * @throws If the file cannot be written
+   */
+  public async saveBookmarks(): Promise<void> {
+    try {
+      const bookmarks = this.service.getAll();
+      const content = this.parser.serialize(bookmarks);
+      await this.fileHandler.write(this.path, content);
+
+      this.logger.info(`Saved ${bookmarks.length} bookmarks to ${this.path}`);
+    } catch (error) {
+      this.logger.error('Failed to save bookmarks', error);
+      throw new Error(`Failed to save bookmarks to ${this.path}: ${error}`);
+    }
+  }
 }
