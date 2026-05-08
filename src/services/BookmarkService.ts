@@ -1,4 +1,4 @@
-import type { Bookmark, BookmarkSchema, BookmarkUpdate } from '@/types/bookmark';
+import type { Bookmark, BookmarkSchema, BookmarkUpdate, SearchOptions } from '@/types/bookmark';
 import { randomUUIDv7 } from 'bun';
 
 /**
@@ -43,6 +43,40 @@ export class BookmarkService {
     }
 
     return created;
+  }
+
+  /**
+   * Searches bookmarks by keywords and returns a filtered array.
+   *
+   * @param options - Search options
+   * @returns An array of `Bookmark` objects that match the search criteria
+   */
+  public searchBy(options: SearchOptions): Bookmark[] {
+    let { includeWords } = options;
+    const {
+      ignoreWords = [],
+      caseSensitive = false,
+      searchIn = ['title', 'url'],
+      includeAllWords = false,
+    } = options;
+
+    return Array.from(this.bookmarks.values()).filter((bookmark) => {
+      const searchTexts: string[] = [];
+
+      if (searchIn.includes('title')) searchTexts.push(bookmark.title);
+      if (searchIn.includes('url')) searchTexts.push(bookmark.url);
+      if (searchIn.includes('folder') && bookmark.folder) searchTexts.push(bookmark.folder);
+
+      const searchText = searchTexts.join(' ');
+
+      return this.matchWithKeywords(
+        searchText,
+        includeWords,
+        ignoreWords,
+        caseSensitive,
+        includeAllWords,
+      );
+    });
   }
 
   /**
@@ -106,5 +140,37 @@ export class BookmarkService {
    */
   private urlExists(url: string): boolean {
     return this.urlIndex.has(url);
+  }
+
+  /**
+   * Checks whether a search text matches a set of include and exclude words.
+   *
+   * @param searchText - The text to search for
+   * @param includeWords - An array of words to include in the search
+   * @param ignoreWords - An array of words to exclude from the search
+   * @param caseSensitive - Whether to perform a case-sensitive search
+   * @param includeAllWords - Whether to require all include words to match
+   * @returns `true` if the search text matches the include and exclude words
+   */
+  private matchWithKeywords(
+    searchText: string,
+    includeWords: string[],
+    ignoreWords: string[],
+    caseSensitive: boolean,
+    includeAllWords: boolean,
+  ): boolean {
+    const prepareText = (text: string) => (caseSensitive ? text : text.toLowerCase());
+
+    const searchTextPrep = prepareText(searchText);
+    const includeWordsPrep = includeWords.map(prepareText);
+    const excludeWordsPrep = ignoreWords.map(prepareText);
+
+    const hasIncludeWord = includeAllWords
+      ? includeWordsPrep.every((word) => searchTextPrep.includes(word)) // AND lógico
+      : includeWordsPrep.some((word) => searchTextPrep.includes(word)); // OR lógico
+
+    const hasExcludeWord = excludeWordsPrep.some((word) => searchTextPrep.includes(word));
+
+    return hasIncludeWord && !hasExcludeWord;
   }
 }
