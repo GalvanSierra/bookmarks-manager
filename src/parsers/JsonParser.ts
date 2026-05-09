@@ -13,7 +13,7 @@ export class JsonParser implements IParserBookmark {
    * @returns An array of parsed bookmarks; returns an empty array if the input is not an array
    */
   parse(content: string): BookmarkSchema[] {
-    const parsed = JSON.parse(content, null);
+    const parsed = JSON.parse(content);
 
     if (!Array.isArray(parsed)) {
       return [];
@@ -41,8 +41,11 @@ export class JsonParser implements IParserBookmark {
   serialize(bookmarks: Bookmark[]): string {
     return JSON.stringify(
       bookmarks.map((b) => {
-        delete b.id;
-        return b;
+        const keyToRemove = 'id';
+
+        // Using object destructuring and rest syntax to remove the specified key
+        const { [keyToRemove]: removedKey, ...newBookmark } = b;
+        return newBookmark;
       }),
       null,
       2,
