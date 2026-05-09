@@ -10,7 +10,7 @@ import { readdir } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 
 /** Map of file extensions to their corresponding parser instances. */
-const parsers: Record<string, IParserBookmark> = {
+const PARSERS: Record<string, IParserBookmark> = {
   '.html': new HtmlParser(),
   '.json': new JsonParser(),
 };
@@ -29,13 +29,12 @@ export class BookmarkManagerFacade {
    * @returns A fully initialized `BookmarkManager` with bookmarks already loaded
    * @throws If the file extension is not supported (`.html` or `.json`)
    */
-
-  async load(path: string): Promise<BookmarkManager> {
+  public async load(path: string): Promise<BookmarkManager> {
     const extension = extname(path);
 
-    if (!parsers[extension]) throw new Error(`Unsupported file extension: ${extension}`);
+    if (!PARSERS[extension]) throw new Error(`Unsupported file extension: ${extension}`);
 
-    const parser = parsers[extension];
+    const parser = PARSERS[extension];
 
     const service = new BookmarkService();
     const manager = new BookmarkManager(path, this.fileHandler, parser, service, this.logger);
@@ -54,6 +53,7 @@ export class BookmarkManagerFacade {
       await manager.saveBookmarks();
     }
   }
+
   /**
    * Exports bookmarks to the given file path.
    *
@@ -63,18 +63,18 @@ export class BookmarkManagerFacade {
    * @param bookmarks - Array of bookmarks to export
    * @throws If the file extension is not supported (`.html` or `.json`)
    */
-  async export(path: string, bookmarks: Bookmark[]): Promise<void> {
+  public async export(path: string, bookmarks: Bookmark[]): Promise<void> {
     const extension = extname(path);
 
-    if (!parsers[extension]) throw new Error(`Unsupported file extension: ${extension}`);
-    const parser = parsers[extension];
+    if (!PARSERS[extension]) throw new Error(`Unsupported file extension: ${extension}`);
+    const parser = PARSERS[extension];
 
     const content = parser.serialize(bookmarks);
 
     await this.fileHandler.write(path, content);
   }
 
-  async readDirectory(path: string): Promise<string[]> {
+  public async readDirectory(path: string): Promise<string[]> {
     const files = await readdir(path, {
       withFileTypes: true,
       recursive: true,
