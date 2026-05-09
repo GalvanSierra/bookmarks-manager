@@ -112,6 +112,13 @@ export class MangaService {
       return sort === 'asc' ? b.chapter - a.chapter : a.chapter - b.chapter;
     });
   }
+
+  /**
+   * Returns the hostname of a URL.
+   *
+   * @param url - The URL to get the hostname of
+   * @returns The hostname of the URL
+   */
   private getHostname(url: string): string {
     try {
       return new URL(url).hostname;

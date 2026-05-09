@@ -154,6 +154,10 @@ export class BookmarkService {
     });
   }
 
+  clear() {
+    throw new Error('Method not implemented.');
+  }
+
   /**
    * Returns the hostname of a URL.
    *
