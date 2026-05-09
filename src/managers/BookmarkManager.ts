@@ -19,9 +19,10 @@ export class BookmarkManager {
    * @param bookmark - Array of bookmark data to add
    * @returns The number of bookmarks that were successfully created
    */
-  public addBookmarks(bookmark: Bookmark[]): number {
+  public addBookmarks(bookmark: Bookmark[]): void {
     const created = this.service.createMany(bookmark);
-    return created;
+
+    this.logger.info(`Added ${created} bookmarks`);
   }
 
   /**
@@ -105,6 +106,11 @@ export class BookmarkManager {
     this.logger.info(`Deleted ${deleted} bookmarks`);
   }
 
+  public clearBookmarks(): void {
+    this.service.clear();
+    this.logger.info('Cleared bookmarks');
+  }
+
   /**
    * Returns all stored bookmarks.
    *
@@ -113,6 +119,7 @@ export class BookmarkManager {
   public getBookmarks(): Bookmark[] {
     return this.service.getAll();
   }
+
   /**
    * Saves the bookmarks to the file system. If `ordered` is `true`, the bookmarks are sorted by domain.
    *
